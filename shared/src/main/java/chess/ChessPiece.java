@@ -1,6 +1,8 @@
 package chess;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -10,7 +12,13 @@ import java.util.Collection;
  */
 public class ChessPiece {
 
+    private final ChessGame.TeamColor pieceColor;
+    private final PieceType type;
+    //Hash set for possible moves
+    private HashSet<ChessMove> possibleMoves = new HashSet<ChessMove>();
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+        this.pieceColor = pieceColor;
+        this.type = type;
     }
 
     /**
@@ -29,14 +37,27 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return pieceColor;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type && Objects.equals(possibleMoves, that.possibleMoves);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type, possibleMoves);
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return type;
     }
 
     /**
@@ -47,6 +68,28 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        switch(board.getPiece(myPosition).getPieceType()) {
+            case KING:
+                break;
+            case PAWN:
+                break;
+            case ROOK:
+                break;
+            case QUEEN:
+                break;
+            case BISHOP:
+
+                possibleMoves.add(new ChessMove(myPosition, myPosition, null));
+                break;
+            case KNIGHT:
+                break;
+            case null:
+                break;
+            default:
+                //blank
+        }
+
+        return possibleMoves;
+
     }
 }
