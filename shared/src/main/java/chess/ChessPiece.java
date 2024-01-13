@@ -68,6 +68,9 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        int tempRow = myPosition.getRow();
+        int tempCol = myPosition.getColumn();
+
         switch(board.getPiece(myPosition).getPieceType()) {
             case KING:
                 break;
@@ -78,8 +81,49 @@ public class ChessPiece {
             case QUEEN:
                 break;
             case BISHOP:
+                if(myPosition.getRow() < 8 && myPosition.getColumn() < 8) {
+                    while(tempRow < 8 && tempCol < 8) {
+                        tempRow++;
+                        tempCol++;
+                        ChessPosition tempPosit = new ChessPosition(tempRow, tempCol);
+                        if(board.getPiece(tempPosit) != null) {break;}
+                        possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                    }
+                }
+                if(myPosition.getRow() < 8 && myPosition.getColumn() > 1) {
+                    tempRow = myPosition.getRow();
+                    tempCol = myPosition.getColumn();
+                    while(tempRow < 8 && tempCol > 1) {
+                        tempRow++;
+                        tempCol--;
+                        ChessPosition tempPosit = new ChessPosition(tempRow, tempCol);
+                        if(board.getPiece(tempPosit) != null) {break;}
+                        possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                    }
+                }
+                if(myPosition.getRow() > 1 && myPosition.getColumn() > 1) {
+                    tempRow = myPosition.getRow();
+                    tempCol = myPosition.getColumn();
+                    while(tempRow > 1 && tempCol > 1) {
+                        tempRow--;
+                        tempCol--;
+                        ChessPosition tempPosit = new ChessPosition(tempRow, tempCol);
+                        if(board.getPiece(tempPosit) != null) {break;}
+                        possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                    }
+                }
+                if(myPosition.getRow() > 1 && myPosition.getColumn() < 8) {
+                    tempRow = myPosition.getRow();
+                    tempCol = myPosition.getColumn();
+                    while(tempRow > 1 && tempCol < 8) {
+                        tempRow--;
+                        tempCol++;
+                        ChessPosition tempPosit = new ChessPosition(tempRow, tempCol);
+                        if(board.getPiece(tempPosit) != null) {break;}
+                        possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                    }
+                }
 
-                possibleMoves.add(new ChessMove(myPosition, myPosition, null));
                 break;
             case KNIGHT:
                 break;
