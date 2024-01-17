@@ -10,13 +10,13 @@ import java.util.Objects;
  */
 public class ChessMove {
 
-    private ChessPosition startPostion;
+    private ChessPosition startPosition;
     private ChessPosition endPosition;
     private ChessPiece.PieceType promotionPiece;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
-        this.startPostion = startPosition;
+        this.startPosition = startPosition;
         this.endPosition = endPosition;
         this.promotionPiece = promotionPiece;
     }
@@ -25,7 +25,7 @@ public class ChessMove {
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        return startPostion;
+        return startPosition;
     }
 
     /**
@@ -40,12 +40,12 @@ public class ChessMove {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessMove chessMove = (ChessMove) o;
-        return Objects.equals(startPostion, chessMove.startPostion) && Objects.equals(endPosition, chessMove.endPosition) && promotionPiece == chessMove.promotionPiece;
+        return Objects.equals(startPosition, chessMove.startPosition) && Objects.equals(endPosition, chessMove.endPosition) && promotionPiece == chessMove.promotionPiece;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(startPostion, endPosition, promotionPiece);
+        return Objects.hash(startPosition, endPosition, promotionPiece);
     }
 
     /**
