@@ -1,5 +1,7 @@
 package chess;
 
+import chess.pieces.*;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -84,50 +86,18 @@ public class ChessPiece {
                 moveBackRight(board, myPosition, false);
                 break;
             case PAWN:
-                if(board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.WHITE) {
-                    moveForward(board, myPosition, false);
-                    if(myPosition.getRow() == 2) {
-                        tempRow += 2;
-                        tempPosit = new ChessPosition(tempRow, myPosition.getColumn());
-                        if(board.getPiece(tempPosit) == null) {
-                            possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
-                        }
-
-                    }
-                } else {
-                    moveBackward(board, myPosition, false);
-                    if(myPosition.getRow() == 7) {
-                        tempRow -= 2;
-                        tempPosit = new ChessPosition(tempRow, myPosition.getColumn());
-                        if(board.getPiece(tempPosit) == null) {
-                            possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
-                        }
-                    }
-                }
-
-                break;
+                Pawn p = new Pawn();
+                return p.pieceMoves(board, myPosition);
             case ROOK:
-                moveForward(board, myPosition, true);
-                moveBackward(board, myPosition, true);
-                moveLeft(board, myPosition, true);
-                moveRight(board, myPosition, true);
-                break;
+                Rook r = new Rook();
+                return r.pieceMoves(board, myPosition);
             case QUEEN:
-                moveForward(board, myPosition, true);
-                moveBackward(board, myPosition, true);
-                moveLeft(board, myPosition, true);
-                moveRight(board, myPosition, true);
-                moveForLeft(board, myPosition, true);
-                moveForRight(board, myPosition, true);
-                moveBackLeft(board, myPosition, true);
-                moveBackRight(board, myPosition, true);
-                break;
+                Queen q = new Queen();
+                return q.pieceMoves(board, myPosition);
             case BISHOP:
-                moveForRight(board, myPosition, true);
-                moveForLeft(board, myPosition, true);
-                moveBackLeft(board, myPosition, true);
-                moveBackRight(board, myPosition, true);
-                break;
+                Bishop b = new Bishop();
+                return b.pieceMoves(board, myPosition);
+                //break;
             case KNIGHT:
                 break;
             case null:
@@ -151,16 +121,31 @@ public class ChessPiece {
                 while(tempRow < 8) {
                     tempRow++;
                     tempPosit = new ChessPosition(tempRow, tempCol);
-                    if(board.getPiece(tempPosit) != null) {break;}
+                    if(board.getPiece(tempPosit) != null) {
+                        if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
+                            possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                        }
+                        break;
+                    }
                     possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
                 }
             }
         } else {
-            tempRow++;
-            tempPosit = new ChessPosition(tempRow, tempCol);
-            if(board.getPiece(tempPosit) == null) {
-                possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+            if(board.getPiece(myPosition).getPieceType() == PieceType.PAWN && myPosition.getRow() == 2) {
+                while(tempRow < 4) {
+                    tempRow++;
+                    tempPosit = new ChessPosition(tempRow, tempCol);
+                    if(board.getPiece(tempPosit) != null) {break;}
+                    possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                }
+            } else {
+                tempRow++;
+                tempPosit = new ChessPosition(tempRow, tempCol);
+                if(board.getPiece(tempPosit) == null) {
+                    possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                }
             }
+
         }
     }
     private void moveBackward(ChessBoard board, ChessPosition myPosition, boolean cont) {
@@ -174,15 +159,29 @@ public class ChessPiece {
                 while(tempRow > 1) {
                     tempRow--;
                     tempPosit = new ChessPosition(tempRow, tempCol);
-                    if(board.getPiece(tempPosit) != null) {break;}
+                    if(board.getPiece(tempPosit) != null) {
+                        if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
+                            possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                        }
+                        break;
+                    }
                     possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
                 }
             }
         } else {
-            tempRow--;
-            tempPosit = new ChessPosition(tempRow, tempCol);
-            if(board.getPiece(tempPosit) == null) {
-                possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+            if(board.getPiece(myPosition).getPieceType() == PieceType.PAWN && myPosition.getRow() == 7) {
+                while(tempRow > 5) {
+                    tempRow--;
+                    tempPosit = new ChessPosition(tempRow, tempCol);
+                    if(board.getPiece(tempPosit) != null) {break;}
+                    possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                }
+            } else {
+                tempRow--;
+                tempPosit = new ChessPosition(tempRow, tempCol);
+                if(board.getPiece(tempPosit) == null) {
+                    possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                }
             }
         }
     }
@@ -197,7 +196,12 @@ public class ChessPiece {
                 while(tempCol > 1) {
                     tempCol--;
                     tempPosit = new ChessPosition(tempRow, tempCol);
-                    if(board.getPiece(tempPosit) != null) {break;}
+                    if(board.getPiece(tempPosit) != null) {
+                        if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
+                            possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                        }
+                        break;
+                    }
                     possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
                 }
             }
@@ -220,7 +224,12 @@ public class ChessPiece {
                 while(tempCol < 8) {
                     tempCol++;
                     tempPosit = new ChessPosition(tempRow, tempCol);
-                    if(board.getPiece(tempPosit) != null) {break;}
+                    if(board.getPiece(tempPosit) != null) {
+                        if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
+                            possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                        }
+                        break;
+                    }
                     possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
                 }
             }
@@ -257,11 +266,13 @@ public class ChessPiece {
             tempRow++;
             tempCol--;
             tempPosit = new ChessPosition(tempRow, tempCol);
-            if(board.getPiece(tempPosit) == null) {
-                possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
-            }
+            pawnCheck(board, myPosition, tempPosit);
+
         }
     }
+
+
+
     private void moveForRight(ChessBoard board, ChessPosition myPosition, boolean cont) {
         ChessPosition tempPosit;
         int tempRow = myPosition.getRow();
@@ -272,7 +283,12 @@ public class ChessPiece {
                     tempRow++;
                     tempCol++;
                     tempPosit = new ChessPosition(tempRow, tempCol);
-                    if(board.getPiece(tempPosit) != null) {break;}
+                    if(board.getPiece(tempPosit) != null) {
+                        if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
+                            possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                        }
+                        break;
+                    }
                     possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
                 }
             }
@@ -280,9 +296,7 @@ public class ChessPiece {
             tempRow++;
             tempCol++;
             tempPosit = new ChessPosition(tempRow, tempCol);
-            if(board.getPiece(tempPosit) == null) {
-                possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
-            }
+            pawnCheck(board, myPosition, tempPosit);
         }
 
     }
@@ -298,7 +312,12 @@ public class ChessPiece {
                     tempRow--;
                     tempCol--;
                     tempPosit = new ChessPosition(tempRow, tempCol);
-                    if(board.getPiece(tempPosit) != null) {break;}
+                    if(board.getPiece(tempPosit) != null) {
+                        if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
+                            possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                        }
+                        break;
+                    }
                     possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
                 }
             }
@@ -306,9 +325,7 @@ public class ChessPiece {
             tempRow--;
             tempCol--;
             tempPosit = new ChessPosition(tempRow, tempCol);
-            if(board.getPiece(tempPosit) == null) {
-                possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
-            }
+            pawnCheck(board, myPosition, tempPosit);
         }
     }
     private void moveBackRight(ChessBoard board, ChessPosition myPosition, boolean cont) {
@@ -323,7 +340,12 @@ public class ChessPiece {
                     tempRow--;
                     tempCol++;
                     tempPosit = new ChessPosition(tempRow, tempCol);
-                    if(board.getPiece(tempPosit) != null) {break;}
+                    if(board.getPiece(tempPosit) != null) {
+                        if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
+                            possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                        }
+                        break;
+                    }
                     possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
                 }
             }
@@ -331,6 +353,18 @@ public class ChessPiece {
             tempRow--;
             tempCol++;
             tempPosit = new ChessPosition(tempRow, tempCol);
+            pawnCheck(board, myPosition, tempPosit);
+        }
+    }
+
+    private void pawnCheck(ChessBoard board, ChessPosition myPosition, ChessPosition tempPosit) {
+        if(board.getPiece(myPosition).getPieceType() == PieceType.PAWN) {
+            if(board.getPiece(tempPosit) != null) {
+                if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
+                    possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
+                }
+            }
+        } else {
             if(board.getPiece(tempPosit) == null) {
                 possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
             }
