@@ -68,9 +68,11 @@ public class Pawn implements PieceMovesCalculator{
         tempRow++;
         tempCol--;
         tempPosit = new ChessPosition(tempRow, tempCol);
-        if(board.getPiece(tempPosit) != null) {
-            if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
-                pawnMoveOne(myPosition, tempPosit);
+        if(myPosition.getRow() < 8 && myPosition.getRow() > 1 && myPosition.getColumn() < 8 && myPosition.getColumn() > 1) {
+            if(board.getPiece(tempPosit) != null) {
+                if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
+                    pawnMoveOne(myPosition, tempPosit);
+                }
             }
         }
     }
@@ -81,9 +83,11 @@ public class Pawn implements PieceMovesCalculator{
         tempRow++;
         tempCol++;
         tempPosit = new ChessPosition(tempRow, tempCol);
-        if(board.getPiece(tempPosit) != null) {
-            if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
-                pawnMoveOne(myPosition, tempPosit);
+        if(myPosition.getRow() < 8 && myPosition.getRow() > 1 && myPosition.getColumn() < 8 && myPosition.getColumn() > 1) {
+            if(board.getPiece(tempPosit) != null) {
+                if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
+                    pawnMoveOne(myPosition, tempPosit);
+                }
             }
         }
     }
@@ -94,9 +98,11 @@ public class Pawn implements PieceMovesCalculator{
         tempRow--;
         tempCol--;
         tempPosit = new ChessPosition(tempRow, tempCol);
-        if(board.getPiece(tempPosit) != null) {
-            if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
-                pawnMoveOne(myPosition, tempPosit);
+        if(myPosition.getRow() < 8 && myPosition.getRow() > 1 && myPosition.getColumn() < 8 && myPosition.getColumn() > 1) {
+            if(board.getPiece(tempPosit) != null) {
+                if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
+                    pawnMoveOne(myPosition, tempPosit);
+                }
             }
         }
     }
@@ -107,11 +113,14 @@ public class Pawn implements PieceMovesCalculator{
         tempRow--;
         tempCol++;
         tempPosit = new ChessPosition(tempRow, tempCol);
-        if(board.getPiece(tempPosit) != null) {
-            if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
-                pawnMoveOne(myPosition, tempPosit);
+        if(myPosition.getRow() < 8 && myPosition.getRow() > 1 && myPosition.getColumn() < 8 && myPosition.getColumn() > 1) {
+            if(board.getPiece(tempPosit) != null) {
+                if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
+                    pawnMoveOne(myPosition, tempPosit);
+                }
             }
         }
+
     }
 
     private void pawnMoveOne(ChessPosition myPosition, ChessPosition tempPosit) {
