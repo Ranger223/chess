@@ -93,7 +93,7 @@ public class King implements PieceMovesCalculator{
     }
 
     private void kingMove(ChessBoard board, ChessPosition myPosition, ChessPosition tempPosit) {
-        if(myPosition.getRow() < 8 && myPosition.getRow() > 1 && myPosition.getColumn() < 8 && myPosition.getColumn() > 1) {
+        if(tempPosit.getRow() <= 8 && tempPosit.getRow() >= 1 && tempPosit.getColumn() <= 8 && tempPosit.getColumn() >= 1) {
             if(board.getPiece(tempPosit) == null || board.getPiece(tempPosit).getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
                 possibleMoves.add(new ChessMove(myPosition, tempPosit, null));
             }

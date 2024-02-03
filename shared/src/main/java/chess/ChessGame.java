@@ -10,6 +10,8 @@ import java.util.Collection;
  */
 public class ChessGame {
     ChessBoard board = new ChessBoard();
+    ChessGame.TeamColor currTurn = TeamColor.WHITE;
+
 
     public ChessGame() {
 
@@ -19,7 +21,7 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return currTurn;
     }
 
     /**
@@ -28,7 +30,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        currTurn = team;
     }
 
     /**
@@ -47,7 +49,11 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        var currPiece = board.getPiece(startPosition);
+
+        if(currPiece == null) {return null;}
+
+        return currPiece.pieceMoves(board, startPosition);
     }
 
     /**
@@ -57,7 +63,41 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        var startPosit = move.getStartPosition();
+        var endPosit = move.getEndPosition();
+
+        if(board.getPiece(startPosit).getTeamColor() != this.getTeamTurn()) {
+            throw new InvalidMoveException();
+        }
+
+        var validMoves = validMoves(startPosit);
+
+        if(validMoves.isEmpty()) {
+            throw new InvalidMoveException();
+        } else {
+            if(validMoves.contains(move)) {
+                if(board.getPiece(endPosit) == null) {
+                    board.addPiece(endPosit, board.getPiece(startPosit));
+                    board.removePiece(startPosit);
+                    if(this.getTeamTurn() == TeamColor.WHITE) {
+                        this.setTeamTurn(TeamColor.BLACK);
+                    } else {
+                        this.setTeamTurn(TeamColor.WHITE);
+                    }
+                } else {
+                    board.removePiece(endPosit);
+                    board.addPiece(endPosit, board.getPiece(startPosit));
+                    board.removePiece(startPosit);
+                    if(this.getTeamTurn() == TeamColor.WHITE) {
+                        this.setTeamTurn(TeamColor.BLACK);
+                    } else {
+                        this.setTeamTurn(TeamColor.WHITE);
+                    }
+                }
+            } else {
+                throw new InvalidMoveException();
+            }
+        }
     }
 
     /**
