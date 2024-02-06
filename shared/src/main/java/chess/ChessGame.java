@@ -49,12 +49,17 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
-    public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+    public Collection<ChessMove> validMoves(ChessPosition startPosition){
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
         var currPiece = board.getPiece(startPosition);
-
         if(currPiece == null) {return null;}
 
-        return currPiece.pieceMoves(board, startPosition);
+        for(ChessMove m : currPiece.pieceMoves(board, startPosition)) {
+            if(!isFutureCheck(currPiece.getTeamColor(), m)) {
+                validMoves.add(m);
+            }
+        }
+        return validMoves;
     }
 
     /**
@@ -109,19 +114,57 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         ArrayList<ChessPosition> enemyMoves = new ArrayList<>();
+        ChessPosition kingPosit = null;
         if(teamColor == TeamColor.WHITE) {
             for(int i = 1; i <= 8; i++) {
                 for(int j = 1; j <= 8; j++) {
-                    ChessPiece currPiece = board.getPiece(new ChessPosition(i, j));
-                    //enemyMoves.add(currPiece.)
-                    if(currPiece != null && currPiece.getPieceType() == ChessPiece.PieceType.KING && currPiece.getTeamColor() == TeamColor.WHITE) {
-                        System.out.println("found white king");
-                        return true;
+                    ChessPosition currPosit = new ChessPosition(i, j);
+                    ChessPiece currPiece = board.getPiece(currPosit);
+                    if(currPiece != null) {
+                        if(currPiece.getTeamColor() != TeamColor.WHITE) {
+                            for(ChessMove m : currPiece.pieceMoves(board, currPosit)) {
+                                enemyMoves.add(m.getEndPosition());
+                            }
+                        }
+                        else if(currPiece.getPieceType() == ChessPiece.PieceType.KING) {
+                            System.out.println("found white king");
+                            kingPosit = new ChessPosition(i, j);
+                        }
                     }
                 }
             }
+            if(kingPosit != null && enemyMoves.contains(kingPosit)) {
+                System.out.println("white king in check!");
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+
+            for(int i = 1; i <= 8; i++) {
+                for(int j = 1; j <= 8; j++) {
+                    ChessPosition currPosit = new ChessPosition(i, j);
+                    ChessPiece currPiece = board.getPiece(currPosit);
+                    if(currPiece != null) {
+                        if(currPiece.getTeamColor() != TeamColor.BLACK) {
+                            for(ChessMove m : currPiece.pieceMoves(board, currPosit)) {
+                                enemyMoves.add(m.getEndPosition());
+                            }
+                        }
+                        else if(currPiece.getPieceType() == ChessPiece.PieceType.KING) {
+                            System.out.println("found black king");
+                            kingPosit = new ChessPosition(i, j);
+                        }
+                    }
+                }
+            }
+            if(kingPosit != null && enemyMoves.contains(kingPosit)) {
+                System.out.println("black king in check!");
+                return true;
+            } else {
+                return false;
+            }
         }
-        return false;
     }
 
     /**
@@ -161,5 +204,51 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return board;
+    }
+
+    private boolean isFutureCheck(TeamColor teamColor, ChessMove move){
+        ChessBoard tempBoard = board.clone();
+        try {
+            simulateMove(move);
+        } catch (Exception e){
+            System.out.println("Failed in future check");
+            e.printStackTrace();
+        }
+
+        if(isInCheck(teamColor)) {
+            board = tempBoard.clone();
+            return true;
+        } else {
+            board = tempBoard.clone();
+            return false;
+        }
+    }
+
+    private void simulateMove(ChessMove move) throws InvalidMoveException {
+        var startPosit = move.getStartPosition();
+        var endPosit = move.getEndPosition();
+
+        if(board.getPiece(startPosit).getTeamColor() != this.getTeamTurn()) {
+            throw new InvalidMoveException();
+        }
+
+        if(board.getPiece(endPosit) == null) {
+            board.addPiece(endPosit, board.getPiece(startPosit));
+            board.removePiece(startPosit);
+//            if(this.getTeamTurn() == TeamColor.WHITE) {
+//                this.setTeamTurn(TeamColor.BLACK);
+//            } else {
+//                this.setTeamTurn(TeamColor.WHITE);
+//            }
+        } else {
+            board.removePiece(endPosit);
+            board.addPiece(endPosit, board.getPiece(startPosit));
+            board.removePiece(startPosit);
+//            if(this.getTeamTurn() == TeamColor.WHITE) {
+//                this.setTeamTurn(TeamColor.BLACK);
+//            } else {
+//                this.setTeamTurn(TeamColor.WHITE);
+//            }
+        }
     }
 }
