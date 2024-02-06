@@ -135,14 +135,12 @@ public class ChessGame {
                             }
                         }
                         else if(currPiece.getPieceType() == ChessPiece.PieceType.KING) {
-                            System.out.println("found white king");
                             kingPosit = new ChessPosition(i, j);
                         }
                     }
                 }
             }
             if(kingPosit != null && enemyMoves.contains(kingPosit)) {
-                System.out.println("white king in check!");
                 return true;
             } else {
                 return false;
@@ -160,14 +158,12 @@ public class ChessGame {
                             }
                         }
                         else if(currPiece.getPieceType() == ChessPiece.PieceType.KING) {
-                            System.out.println("found black king");
                             kingPosit = new ChessPosition(i, j);
                         }
                     }
                 }
             }
             if(kingPosit != null && enemyMoves.contains(kingPosit)) {
-                System.out.println("black king in check!");
                 return true;
             } else {
                 return false;
@@ -182,7 +178,24 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if(isInCheck(teamColor)) {
+            Collection<ChessMove> possibleMoves = new ArrayList<>();
+                for(int i = 1; i <= 8; i++) {
+                    for(int j = 1; j <= 8; j++) {
+                        ChessPosition currPosit = new ChessPosition(i, j);
+                        ChessPiece currPiece = board.getPiece(currPosit);
+                        if(currPiece != null && currPiece.getTeamColor() == teamColor) {
+                            possibleMoves.addAll(validMoves(currPosit));
+                        }
+                    }
+                }
+                if (possibleMoves.isEmpty()) {
+                    return true;
+                } else {
+                    return false;
+                }
+        }
+        return false;
     }
 
     /**
@@ -193,7 +206,24 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if(!isInCheck(teamColor)) {
+            Collection<ChessMove> possibleMoves = new ArrayList<>();
+            for(int i = 1; i <= 8; i++) {
+                for(int j = 1; j <= 8; j++) {
+                    ChessPosition currPosit = new ChessPosition(i, j);
+                    ChessPiece currPiece = board.getPiece(currPosit);
+                    if(currPiece != null && currPiece.getTeamColor() == teamColor) {
+                        possibleMoves.addAll(validMoves(currPosit));
+                    }
+                }
+            }
+            if (possibleMoves.isEmpty()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 
     /**
@@ -232,31 +262,18 @@ public class ChessGame {
         }
     }
 
-    private void simulateMove(ChessMove move) throws InvalidMoveException {
+    private void simulateMove(ChessMove move) {
         var startPosit = move.getStartPosition();
         var endPosit = move.getEndPosition();
-
-        if(board.getPiece(startPosit).getTeamColor() != this.getTeamTurn()) {
-            throw new InvalidMoveException();
-        }
 
         if(board.getPiece(endPosit) == null) {
             board.addPiece(endPosit, board.getPiece(startPosit));
             board.removePiece(startPosit);
-//            if(this.getTeamTurn() == TeamColor.WHITE) {
-//                this.setTeamTurn(TeamColor.BLACK);
-//            } else {
-//                this.setTeamTurn(TeamColor.WHITE);
-//            }
+
         } else {
             board.removePiece(endPosit);
             board.addPiece(endPosit, board.getPiece(startPosit));
             board.removePiece(startPosit);
-//            if(this.getTeamTurn() == TeamColor.WHITE) {
-//                this.setTeamTurn(TeamColor.BLACK);
-//            } else {
-//                this.setTeamTurn(TeamColor.WHITE);
-//            }
         }
     }
 }
