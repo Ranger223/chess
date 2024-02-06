@@ -83,7 +83,11 @@ public class ChessGame {
         } else {
             if(validMoves.contains(move)) {
                 if(board.getPiece(endPosit) == null) {
-                    board.addPiece(endPosit, board.getPiece(startPosit));
+                    if(move.getPromotionPiece() != null) {
+                        board.addPiece(endPosit, new ChessPiece(this.getTeamTurn(), move.getPromotionPiece()));
+                    } else {
+                        board.addPiece(endPosit, board.getPiece(startPosit));
+                    }
                     board.removePiece(startPosit);
                     if(this.getTeamTurn() == TeamColor.WHITE) {
                         this.setTeamTurn(TeamColor.BLACK);
@@ -92,7 +96,11 @@ public class ChessGame {
                     }
                 } else {
                     board.removePiece(endPosit);
-                    board.addPiece(endPosit, board.getPiece(startPosit));
+                    if(move.getPromotionPiece() != null) {
+                        board.addPiece(endPosit, new ChessPiece(this.getTeamTurn(), move.getPromotionPiece()));
+                    } else {
+                        board.addPiece(endPosit, board.getPiece(startPosit));
+                    }
                     board.removePiece(startPosit);
                     if(this.getTeamTurn() == TeamColor.WHITE) {
                         this.setTeamTurn(TeamColor.BLACK);
