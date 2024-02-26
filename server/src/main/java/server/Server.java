@@ -4,6 +4,10 @@ import spark.*;
 
 public class Server {
 
+//    public Server(DataAccess dataAccess) {
+//        service = new Service(dataAccess);
+//    }
+
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
