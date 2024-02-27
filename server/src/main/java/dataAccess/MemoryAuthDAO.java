@@ -5,7 +5,6 @@ import model.AuthData;
 import java.util.ArrayList;
 
 public class MemoryAuthDAO implements AuthDAO {
-    private int nextId = 1;
     private static ArrayList<AuthData> authTokens = new ArrayList<>();
 
     private static MemoryAuthDAO authDAO;

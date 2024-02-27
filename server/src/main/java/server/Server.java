@@ -1,19 +1,24 @@
 package server;
 
+import handler.TestServerHandler;
 import spark.*;
 
 public class Server {
 
-//    public Server(DataAccess dataAccess) {
-//        service = new Service(dataAccess);
-//    }
+    TestServerHandler tshandler;
 
+    public Server() {
+        tshandler = new TestServerHandler();
+    }
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
+        //Spark.delete("/db", (req, res) -> tshandler.clearHandler(req, res));
+        Spark.delete("/db", tshandler::clearHandler);
+        Spark.post("/user", tshandler::registerHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
