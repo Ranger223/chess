@@ -6,8 +6,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MemoryUserDAO implements UserDAO {
-    private int nextId = 1;
-    final private ArrayList<UserData> users = new ArrayList<>();
+    private static MemoryUserDAO userDAO;
+    private static ArrayList<UserData> users = new ArrayList<>();
+
+    public static MemoryUserDAO getInstance() {
+        if(userDAO == null) {
+            userDAO = new MemoryUserDAO();
+        }
+        return userDAO;
+    }
     @Override
     public void createUser(UserData user) throws DataAccessException {
         user = new UserData(user.getUsername(), user.getPassword(), user.getEmail());
@@ -23,4 +30,10 @@ public class MemoryUserDAO implements UserDAO {
         }
         return null;
     }
+
+    @Override
+    public void clear() {
+        users.clear();
+    }
+
 }

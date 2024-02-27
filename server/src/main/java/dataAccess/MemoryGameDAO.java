@@ -9,10 +9,18 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO {
-    private int nextId = 1;
-    final private ArrayList<GameData> games = new ArrayList<>();
+
+    private static ArrayList<GameData> games = new ArrayList<>();
+    private static MemoryGameDAO gameDAO;
+
+    public static MemoryGameDAO getInstance() {
+        if(gameDAO == null) {
+            gameDAO = new MemoryGameDAO();
+        }
+        return gameDAO;
+    }
     @Override
-    public void clear() throws DataAccessException {
+    public void clear() {
         games.clear();
     }
 

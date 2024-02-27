@@ -5,7 +5,7 @@ import model.GameData;
 import java.util.Collection;
 
 public interface GameDAO {
-    void clear() throws DataAccessException;
+    void clear();
 
     Collection<GameData> listGames() throws DataAccessException;
 
