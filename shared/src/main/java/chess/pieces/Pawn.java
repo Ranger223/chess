@@ -68,6 +68,10 @@ public class Pawn implements PieceMovesCalculator{
         tempRow++;
         tempCol--;
         tempPosit = new ChessPosition(tempRow, tempCol);
+        inBoundsCheckAndMove(board, myPosition, tempPosit);
+    }
+
+    private void inBoundsCheckAndMove(ChessBoard board, ChessPosition myPosition, ChessPosition tempPosit) {
         if(myPosition.getRow() < 8 && myPosition.getRow() > 1 && myPosition.getColumn() < 8 && myPosition.getColumn() > 1) {
             if(board.getPiece(tempPosit) != null) {
                 if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
@@ -76,6 +80,7 @@ public class Pawn implements PieceMovesCalculator{
             }
         }
     }
+
     private void moveForRight(ChessBoard board, ChessPosition myPosition) {
         ChessPosition tempPosit;
         int tempRow = myPosition.getRow();
@@ -83,13 +88,7 @@ public class Pawn implements PieceMovesCalculator{
         tempRow++;
         tempCol++;
         tempPosit = new ChessPosition(tempRow, tempCol);
-        if(myPosition.getRow() < 8 && myPosition.getRow() > 1 && myPosition.getColumn() < 8 && myPosition.getColumn() > 1) {
-            if(board.getPiece(tempPosit) != null) {
-                if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
-                    pawnMoveOne(myPosition, tempPosit);
-                }
-            }
-        }
+        inBoundsCheckAndMove(board, myPosition, tempPosit);
     }
     private void moveBackLeft(ChessBoard board, ChessPosition myPosition) {
         ChessPosition tempPosit;
@@ -98,13 +97,7 @@ public class Pawn implements PieceMovesCalculator{
         tempRow--;
         tempCol--;
         tempPosit = new ChessPosition(tempRow, tempCol);
-        if(myPosition.getRow() < 8 && myPosition.getRow() > 1 && myPosition.getColumn() < 8 && myPosition.getColumn() > 1) {
-            if(board.getPiece(tempPosit) != null) {
-                if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
-                    pawnMoveOne(myPosition, tempPosit);
-                }
-            }
-        }
+        inBoundsCheckAndMove(board, myPosition, tempPosit);
     }
     private void moveBackRight(ChessBoard board, ChessPosition myPosition) {
         ChessPosition tempPosit;
@@ -113,13 +106,7 @@ public class Pawn implements PieceMovesCalculator{
         tempRow--;
         tempCol++;
         tempPosit = new ChessPosition(tempRow, tempCol);
-        if(myPosition.getRow() < 8 && myPosition.getRow() > 1 && myPosition.getColumn() < 8 && myPosition.getColumn() > 1) {
-            if(board.getPiece(tempPosit) != null) {
-                if (board.getPiece(myPosition).getTeamColor() != board.getPiece(tempPosit).getTeamColor()) {
-                    pawnMoveOne(myPosition, tempPosit);
-                }
-            }
-        }
+        inBoundsCheckAndMove(board, myPosition, tempPosit);
 
     }
 
