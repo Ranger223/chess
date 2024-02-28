@@ -24,6 +24,8 @@ public class Server {
         Spark.get("/game", tshandler::listGamesHandler);
         Spark.put("/game", tshandler::joinGameHandler);
 
+        //Handle Exceptions
+
         Spark.awaitInitialization();
         return Spark.port();
     }

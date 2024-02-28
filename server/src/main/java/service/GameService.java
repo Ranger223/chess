@@ -1,11 +1,9 @@
 package service;
 
 import dataAccess.*;
-import model.AuthData;
 import model.GameData;
 import model.JoinData;
-import model.UserData;
-import service.DuplicateException;
+
 
 import java.util.Collection;
 

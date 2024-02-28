@@ -1,6 +1,5 @@
 package handler;
 
-import dataAccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import model.JoinData;
@@ -11,9 +10,7 @@ import service.UserService;
 import spark.Request;
 import spark.Response;
 import com.google.gson.Gson;
-import service.DuplicateException;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -32,8 +29,8 @@ public class TestServerHandler {
                 return "{ \"message\": \"Error: already taken\" }";
             }
             if(user.getPassword() == null || user.getUsername() == null) {
-                res.status(403);
-                return "{ \"message\": \"Error: already taken\" }";
+                res.status(400);
+                return "{ \"message\": \"Error: bad request\" }";
             }
             AuthData authData = userService.register(user);
             res.status(200);
