@@ -46,4 +46,8 @@ public class GameService {
         }
         //gameDAO.updateGame();
     }
+
+    public void clear() {
+        gameDAO.clear();
+    }
 }

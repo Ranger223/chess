@@ -31,6 +31,10 @@ public class TestServerHandler {
                 res.status(403);
                 return "{ \"message\": \"Error: already taken\" }";
             }
+            if(user.getPassword() == null || user.getUsername() == null) {
+                res.status(403);
+                return "{ \"message\": \"Error: already taken\" }";
+            }
             AuthData authData = userService.register(user);
             res.status(200);
             return gson.toJson(authData);
@@ -136,7 +140,10 @@ public class TestServerHandler {
                 res.status(401);
                 return "{ \"message\": \"Error: unauthorized\" }";
             }
-
+            if (gameService.getGame(joinData.gameID()) == null) {
+                res.status(400);
+                return "{ \"message\": \"Error: bad request\" }";
+            }
             gameService.updateGame(joinData, token);
             res.status(200);
             return "{}";
@@ -156,6 +163,7 @@ public class TestServerHandler {
 
     public Object clearHandler(Request req, Response res) {
         userService.clear();
+        gameService.clear();
         res.status(200);
         return "{}";
     }
