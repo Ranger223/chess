@@ -32,6 +32,14 @@ public class MemoryUserDAO implements UserDAO {
     }
 
     @Override
+    public boolean validateUser(UserData user) throws DataAccessException {
+        if(user.getPassword().equals(getUser(user.getUsername()).getPassword())) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void clear() {
         users.clear();
     }

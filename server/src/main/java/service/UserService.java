@@ -19,11 +19,21 @@ public class UserService {
         AuthData auth = new AuthData(user.getUsername(), UUID.randomUUID().toString());
         return authDAO.createAuth(auth);
     }
-    public AuthData login(UserData user) {
+    public AuthData login(UserData user) throws DataAccessException {
+        if(userDAO.validateUser(user)) {
+            AuthData auth = new AuthData(user.getUsername(), UUID.randomUUID().toString());
+            return authDAO.createAuth(auth);
+        }
         return null;
     }
     public void logout(UserData user) {
 
+    }
+    public boolean userExists(UserData user) throws DataAccessException {
+        if(userDAO.getUser(user.getUsername()) != null) {
+            return true;
+        }
+        return false;
     }
     public void clear() {
         userDAO.clear();
