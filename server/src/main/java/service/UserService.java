@@ -26,8 +26,11 @@ public class UserService {
         }
         return null;
     }
-    public void logout(UserData user) {
-
+    public boolean logout(String auth) throws DataAccessException {
+        if(authDAO.deleteAuth(auth)) {
+            return true;
+        }
+        return false;
     }
     public boolean userExists(UserData user) throws DataAccessException {
         if(userDAO.getUser(user.getUsername()) != null) {

@@ -20,6 +20,7 @@ public class Server {
         Spark.delete("/db", tshandler::clearHandler);
         Spark.post("/user", tshandler::registerHandler);
         Spark.post("/session", tshandler::loginHandler);
+        Spark.delete("/session", tshandler::logoutHandler);
 
         Spark.awaitInitialization();
         return Spark.port();

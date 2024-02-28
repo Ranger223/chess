@@ -26,7 +26,8 @@ public class TestServerHandler {
         } catch (Exception e) {
             System.out.println("Error in register handler!!");
             e.printStackTrace();
-            return null;
+            res.status(500);
+            return "{ \"message\": \"Error: description\" }";
         }
 
     }
@@ -50,12 +51,28 @@ public class TestServerHandler {
         } catch (Exception e) {
             System.out.println("Error in login handler!!");
             e.printStackTrace();
-            return null;
+            res.status(500);
+            return "{ \"message\": \"Error: description\" }";
         }
     }
 
     public Object logoutHandler(Request req, Response res) {
-        return null;
+        String token = req.headers("authorization");
+
+        try {
+            if(!userService.logout(token)) {
+                res.status(401);
+                return "{ \"message\": \"Error: unauthorized\" }";
+            }
+            res.status(200);
+            return "{}";
+
+        } catch (Exception e) {
+            System.out.println("Error in logout handler!!");
+            e.printStackTrace();
+            res.status(500);
+            return "{ \"message\": \"Error: description\" }";
+        }
     }
 
     public Object clearHandler(Request req, Response res) {
