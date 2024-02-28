@@ -12,6 +12,7 @@ public class MemoryGameDAO implements GameDAO {
 
     private static ArrayList<GameData> games = new ArrayList<>();
     private static MemoryGameDAO gameDAO;
+    private int id = 1;
 
     public static MemoryGameDAO getInstance() {
         if(gameDAO == null) {
@@ -31,11 +32,28 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public void updateGame(GameData game) throws DataAccessException {
-
+        for(GameData g : games) {
+            if (g.getGameID() == game.getGameID()) {
+                games.remove(g);
+                games.add(game);
+            }
+        }
     }
 
     @Override
-    public void createGame(GameData game) throws DataAccessException {
+    public GameData getGame(int gameID) throws DataAccessException {
+        for(GameData game : games) {
+            if (game.getGameID() == gameID) {
+                return game;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public GameData createGame(GameData game) throws DataAccessException {
+        game.setGameID(id++);
         games.add(game);
+        return game;
     }
 }

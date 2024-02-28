@@ -38,6 +38,13 @@ public class UserService {
         }
         return false;
     }
+
+    public boolean authExists(String token) throws DataAccessException {
+        if(authDAO.getAuth(token) != null) {
+            return true;
+        }
+        return false;
+    }
     public void clear() {
         userDAO.clear();
         authDAO.clear();
