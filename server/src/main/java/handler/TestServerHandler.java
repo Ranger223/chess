@@ -20,6 +20,7 @@ public class TestServerHandler {
     public Gson gson = new Gson();
 
     public Object registerHandler(Request req, Response res) {
+        //Handles registration requests
         UserData user;
         user = gson.fromJson(req.body(), UserData.class);
 
