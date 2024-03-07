@@ -13,8 +13,8 @@ public class GameService {
     private final GameDAO gameDAO;
 
     public GameService() {
-        userDAO = MemoryUserDAO.getInstance();
-        authDAO = MemoryAuthDAO.getInstance();
+        userDAO = SqlUserDAO.getInstance();
+        authDAO = SqlAuthDAO.getInstance();
         gameDAO = MemoryGameDAO.getInstance();
     }
 

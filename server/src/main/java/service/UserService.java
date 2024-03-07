@@ -13,7 +13,7 @@ public class UserService {
     public UserService() {
         //userDAO = MemoryUserDAO.getInstance();
         userDAO = SqlUserDAO.getInstance();
-        authDAO = MemoryAuthDAO.getInstance();
+        authDAO = SqlAuthDAO.getInstance();
     }
     public AuthData register(UserData user) throws DataAccessException {
         userDAO.createUser(user);
