@@ -1,5 +1,8 @@
 package dataAccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
+import model.AuthData;
 import model.GameData;
 
 import java.sql.SQLException;
@@ -9,7 +12,7 @@ import java.util.Collection;
 public class SqlGameDAO implements GameDAO{
 
     private static SqlGameDAO gameDAO;
-    private static ArrayList<GameData> games = new ArrayList<>();
+
 
     public SqlGameDAO() {
         try {
@@ -39,7 +42,27 @@ public class SqlGameDAO implements GameDAO{
 
     @Override
     public Collection<GameData> listGames() throws DataAccessException {
-        return null;
+        var statement = "SELECT * FROM games";
+        ArrayList<GameData> games = new ArrayList<>();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                try (var rs = preparedStatement.executeQuery()) {
+                    while (rs.next()) {
+                        var rsGameID = rs.getInt("gameid");
+                        var rsGameName = rs.getString("gamename");
+                        var rsWhiteUserName = rs.getString("whiteusername");
+                        var rsBlackUserName = rs.getString("blackusername");
+                        var rsChessGame = rs.getString("game");
+                        GameData game = new GameData(rsGameID, rsGameName, rsWhiteUserName, rsBlackUserName, new Gson().fromJson(rsChessGame, ChessGame.class));
+                        games.add(game);
+                    }
+                }
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return games;
     }
 
     @Override
