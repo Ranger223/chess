@@ -3,12 +3,38 @@ package dataAccess;
 import model.GameData;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class SqlGameDAO implements GameDAO{
+
+    private static SqlGameDAO gameDAO;
+    private static ArrayList<GameData> games = new ArrayList<>();
+
+    public SqlGameDAO() {
+        try {
+            configureDatabase();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static SqlGameDAO getInstance() {
+        if(gameDAO == null) {
+            gameDAO = new SqlGameDAO();
+        }
+        return gameDAO;
+    }
     @Override
     public void clear() {
-
+        var statement = "DELETE FROM games";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -33,15 +59,14 @@ public class SqlGameDAO implements GameDAO{
 
     private final String[] createStatements = {
             """
-            CREATE TABLE IF NOT EXISTS  users (
-              `id` int NOT NULL AUTO_INCREMENT,
-              `name` varchar(256) NOT NULL,
-              `type` ENUM('CAT', 'DOG', 'FISH', 'FROG', 'ROCK') DEFAULT 'CAT',
-              `json` TEXT DEFAULT NULL,
-              PRIMARY KEY (`id`),
-              INDEX(type),
-              INDEX(name)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            CREATE TABLE IF NOT EXISTS games (
+              `gameid` int NOT NULL AUTO_INCREMENT,
+              `whiteusername` varchar(256),
+              `blackusername` varchar(256),
+              `gamename` varchar(128) NOT NULL,
+              `game` TEXT DEFAULT NULL,
+              PRIMARY KEY (`gameid`)
+            )
             """
     };
 
