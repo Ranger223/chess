@@ -11,7 +11,8 @@ public class UserService {
     private final AuthDAO authDAO;
 
     public UserService() {
-        userDAO = MemoryUserDAO.getInstance();
+        //userDAO = MemoryUserDAO.getInstance();
+        userDAO = SqlUserDAO.getInstance();
         authDAO = MemoryAuthDAO.getInstance();
     }
     public AuthData register(UserData user) throws DataAccessException {

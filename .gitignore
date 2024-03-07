@@ -9,4 +9,4 @@ out/
 ### Mac OS ###
 .DS_Store
 
-C:\Users\steve\Documents\cs240\chess\server\src\main\resources\db.properties
+server/src/main/resources/db.properties
