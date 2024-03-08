@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class SqlGameDAO implements GameDAO{
-
+//Minor additions
     private static SqlGameDAO gameDAO;
 
 
