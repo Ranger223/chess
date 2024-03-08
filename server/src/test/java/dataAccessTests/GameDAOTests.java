@@ -1,5 +1,6 @@
 package dataAccessTests;
 
+import chess.ChessGame;
 import dataAccess.*;
 import model.GameData;
 import org.junit.jupiter.api.Assertions;
@@ -21,25 +22,129 @@ public class GameDAOTests {
         gameDAO.clear();
         userDAO.clear();
     }
+
     @Test
-    public void testInsertBlackUsernameGood() throws DataAccessException {
+    public void testClear() throws DataAccessException {
         GameData game = new GameData();
-        game.setGameName("Testgame");
+        game.setGameName("Thegame");
         gameDAO.createGame(game);
 
         Assertions.assertDoesNotThrow(() -> {
-            gameDAO.addBlackUser(1, "TestUser");
+            gameDAO.clear();
         });
     }
 
     @Test
-    public void testInsertBlackUsernameBad() throws DataAccessException {
+    public void testUpdateGamePos() throws DataAccessException {
         GameData game = new GameData();
-        game.setGameName("Testgame");
+        game.setGameName("Thegame");
+        gameDAO.createGame(game);
+
+        GameData game2 = new GameData();
+        game2.setGame(new ChessGame());
+
+        Assertions.assertDoesNotThrow(() -> {
+            gameDAO.updateGame(game2, gameDAO.getGame(game.getGameID()).getGameID());
+        });
+    }
+
+    @Test
+    public void testUpdateGameNeg() throws DataAccessException {
+        GameData game = new GameData();
+        game.setGameName("Thegame");
+        gameDAO.createGame(game);
+
+        GameData game2 = new GameData();
+        game2.setGame(new ChessGame());
+
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            gameDAO.updateGame(game2, -1);
+        });
+    }
+
+    @Test
+    public void testAddWhiteUserPos() throws DataAccessException {
+        GameData game = new GameData();
+        game.setGameName("Thegame");
         gameDAO.createGame(game);
 
         Assertions.assertDoesNotThrow(() -> {
-            gameDAO.addBlackUser(69, "TestUser");
+            gameDAO.addWhiteUser(gameDAO.getGame(game.getGameID()).getGameID(), "test");
+        });
+    }
+
+    @Test
+    public void testAddWhiteUserNeg() throws DataAccessException {
+        GameData game = new GameData();
+        game.setGameName("Thegame");
+        gameDAO.createGame(game);
+
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            gameDAO.addWhiteUser(66666669, "test");
+        });
+    }
+    @Test
+    public void testAddBlackUserPos() throws DataAccessException {
+        GameData game = new GameData();
+        game.setGameName("Thegame");
+        gameDAO.createGame(game);
+
+        Assertions.assertDoesNotThrow(() -> {
+            gameDAO.addBlackUser(gameDAO.getGame(game.getGameID()).getGameID(), "test");
+        });
+    }
+
+    @Test
+    public void testAddBlackUserNeg() throws DataAccessException {
+        GameData game = new GameData();
+        game.setGameName("Thegame");
+        gameDAO.createGame(game);
+
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            gameDAO.addBlackUser(69, "test");
+        });
+    }
+
+    @Test
+    public void testGetGamePos() throws DataAccessException {
+        GameData game = new GameData();
+        game.setGameName("Thegame");
+        gameDAO.createGame(game);
+
+        GameData game2 = new GameData();
+        game2.setGame(new ChessGame());
+
+        Assertions.assertNotNull(gameDAO.getGame(gameDAO.getGame(game.getGameID()).getGameID()));
+    }
+
+    @Test
+    public void testGetGameNeg() throws DataAccessException {
+        GameData game = new GameData();
+        game.setGameName("Thegame");
+        gameDAO.createGame(game);
+
+        GameData game2 = new GameData();
+        game2.setGame(new ChessGame());
+
+        Assertions.assertNull(gameDAO.getGame(-22));
+    }
+
+    @Test
+    public void testCreateGamePos() throws DataAccessException {
+        GameData game = new GameData();
+        game.setGameName("Thegame");
+
+        Assertions.assertDoesNotThrow(() -> {
+            gameDAO.createGame(game);
+        });
+    }
+
+    @Test
+    public void testCreateGameNeg() throws DataAccessException {
+        GameData game = new GameData();
+
+        Assertions.assertThrows(DataAccessException.class, () -> {
+            gameDAO.createGame(game);
         });
     }
 

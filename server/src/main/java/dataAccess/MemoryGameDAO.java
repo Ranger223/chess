@@ -28,7 +28,7 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public void updateGame(GameData game) throws DataAccessException {
+    public void updateGame(GameData game, int gameID) throws DataAccessException {
         for(GameData g : games) {
             if (g.getGameID() == game.getGameID()) {
                 games.remove(g);

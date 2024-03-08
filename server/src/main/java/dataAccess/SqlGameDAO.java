@@ -68,8 +68,8 @@ public class SqlGameDAO implements GameDAO{
     }
 
     @Override
-    public void updateGame(GameData game) throws DataAccessException {
-        GameData tempGame = getGame(game.getGameID());
+    public void updateGame(GameData game, int gameID) throws DataAccessException {
+        GameData tempGame = getGame(gameID);
         if (tempGame != null) {
             var statement = "UPDATE games SET game=? WHERE gameid=?";
             try (var conn = DatabaseManager.getConnection()) {
@@ -81,10 +81,15 @@ public class SqlGameDAO implements GameDAO{
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+        } else {
+            throw new DataAccessException("There is no game with this ID");
         }
     }
     @Override
     public void addWhiteUser(int gameID, String username) throws DataAccessException {
+        if(getGame(gameID) == null) {
+            throw new DataAccessException("No game exists with that gameID");
+        }
         var statement = "UPDATE games SET whiteusername=? WHERE gameid=?";
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(statement)) {
@@ -99,6 +104,9 @@ public class SqlGameDAO implements GameDAO{
 
     @Override
     public void addBlackUser(int gameID, String username) throws DataAccessException {
+        if(getGame(gameID) == null) {
+            throw new DataAccessException("No game exists with that gameID");
+        }
         var statement = "UPDATE games SET blackusername=? WHERE gameid=?";
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(statement)) {
@@ -149,6 +157,9 @@ public class SqlGameDAO implements GameDAO{
 
     @Override
     public GameData createGame(GameData game) throws DataAccessException {
+        if(game.getGameName() == null) {
+            throw new DataAccessException("No name has been assigned to this game");
+        }
         var statement = "INSERT INTO games (gamename, game) VALUES (?, ?)";
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(statement, PreparedStatement.RETURN_GENERATED_KEYS)) {
