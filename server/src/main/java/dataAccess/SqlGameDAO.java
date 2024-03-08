@@ -5,6 +5,8 @@ import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -67,17 +69,106 @@ public class SqlGameDAO implements GameDAO{
 
     @Override
     public void updateGame(GameData game) throws DataAccessException {
+        GameData tempGame = getGame(game.getGameID());
+        if (tempGame != null) {
+            var statement = "UPDATE games SET game=? WHERE gameid=?";
+            try (var conn = DatabaseManager.getConnection()) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.setObject(1, new Gson().toJson(game.getGame()));
+                    preparedStatement.setInt(2, game.getGameID());
+                    preparedStatement.executeUpdate();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    @Override
+    public void addWhiteUser(int gameID, String username) throws DataAccessException {
+        var statement = "UPDATE games SET whiteusername=? WHERE gameid=?";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, username);
+                preparedStatement.setInt(2, gameID);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    @Override
+    public void addBlackUser(int gameID, String username) throws DataAccessException {
+        var statement = "UPDATE games SET blackusername=? WHERE gameid=?";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1, username);
+                preparedStatement.setInt(2, gameID);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
-        return null;
+        var statement = "SELECT * FROM games WHERE gameid=?";
+
+        int rsGameID = 0;
+        String rsGameName = null;
+        String rsWhiteUserName = null;
+        String rsBlackUserName = null;
+        String rsChessGame = null;
+
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
+                preparedStatement.setInt(1, gameID);
+                try (var rs = preparedStatement.executeQuery()) {
+                    if(!rs.next()) {
+                        return null;
+                    }
+                    rs.beforeFirst();
+                    while (rs.next()) {
+                        rsGameID = rs.getInt("gameid");
+                        rsGameName = rs.getString("gamename");
+                        rsWhiteUserName = rs.getString("whiteusername");
+                        rsBlackUserName = rs.getString("blackusername");
+                        rsChessGame = rs.getString("game");
+                    }
+
+                    return new GameData(rsGameID, rsGameName, rsWhiteUserName, rsBlackUserName, new Gson().fromJson(rsChessGame, ChessGame.class));
+                }
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public GameData createGame(GameData game) throws DataAccessException {
-        return null;
+        var statement = "INSERT INTO games (gamename, game) VALUES (?, ?)";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement, PreparedStatement.RETURN_GENERATED_KEYS)) {
+                preparedStatement.setString(1, game.getGameName());
+                preparedStatement.setString(2, new Gson().toJson(game.getGame()));
+                preparedStatement.executeUpdate();
+
+                try (var result = preparedStatement.getGeneratedKeys()) {
+                    if (result.next()) {
+                        int newGameID = result.getInt(1);
+                        game.setGameID(newGameID);
+                    } else {
+                        throw new SQLException("No Game ID was generated");
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return game;
     }
 
     private final String[] createStatements = {
@@ -86,7 +177,7 @@ public class SqlGameDAO implements GameDAO{
               `gameid` int NOT NULL AUTO_INCREMENT,
               `whiteusername` varchar(256),
               `blackusername` varchar(256),
-              `gamename` varchar(128) NOT NULL,
+              `gamename` varchar(128),
               `game` TEXT DEFAULT NULL,
               PRIMARY KEY (`gameid`)
             )

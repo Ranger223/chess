@@ -11,6 +11,10 @@ public interface GameDAO {
 
     void updateGame(GameData game) throws DataAccessException;
 
+    public void addWhiteUser(int gameID, String username) throws DataAccessException;
+
+    public void addBlackUser(int gameID, String username) throws DataAccessException;
+
     GameData getGame(int gameID) throws DataAccessException;
 
     GameData createGame(GameData game) throws DataAccessException;

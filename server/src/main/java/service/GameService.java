@@ -15,7 +15,7 @@ public class GameService {
     public GameService() {
         userDAO = SqlUserDAO.getInstance();
         authDAO = SqlAuthDAO.getInstance();
-        gameDAO = MemoryGameDAO.getInstance();
+        gameDAO = SqlGameDAO.getInstance();
     }
 
     public GameData createGame(GameData game) throws DataAccessException {
@@ -35,14 +35,15 @@ public class GameService {
 
         if (joinData.playerColor() == JoinData.Color.WHITE && game.getWhiteUsername() == null) {
             game.setWhiteUsername(authDAO.getAuth(token).getUsername());
+            gameDAO.addWhiteUser(game.getGameID(), game.getWhiteUsername());
         } else if (joinData.playerColor() == JoinData.Color.BLACK && game.getBlackUsername() == null) {
             game.setBlackUsername(authDAO.getAuth(token).getUsername());
+            gameDAO.addBlackUser(game.getGameID(), game.getBlackUsername());
         } else if (joinData.playerColor() == null) {
 
         } else {
             throw new DuplicateException("This team color is already assigned");
         }
-        //gameDAO.updateGame();
     }
 
     public void clear() {

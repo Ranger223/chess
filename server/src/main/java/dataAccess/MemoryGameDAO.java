@@ -38,6 +38,16 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
+    public void addWhiteUser(int gameID, String username) throws DataAccessException {
+
+    }
+
+    @Override
+    public void addBlackUser(int gameID, String username) throws DataAccessException {
+
+    }
+
+    @Override
     public GameData getGame(int gameID) throws DataAccessException {
         for(GameData game : games) {
             if (game.getGameID() == gameID) {
