@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class SqlGameDAO implements GameDAO{
-//Minor additions
+
     private static SqlGameDAO gameDAO;
 
 
@@ -111,6 +111,7 @@ public class SqlGameDAO implements GameDAO{
         }
     }
 
+    //Get a GameData object from the SQL database
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
         var statement = "SELECT * FROM games WHERE gameid=?";
