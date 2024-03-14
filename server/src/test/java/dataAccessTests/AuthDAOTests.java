@@ -43,7 +43,7 @@ public class AuthDAOTests {
     }
 
     @Test
-    public void testCreateUserNeg() throws DataAccessException {
+    public void testCreateAuthNeg() throws DataAccessException {
         AuthData auth = new AuthData(null, "token");
 
         Assertions.assertThrows(RuntimeException.class, () -> {
@@ -52,17 +52,17 @@ public class AuthDAOTests {
     }
 
     @Test
-    public void testGetUserPos() throws DataAccessException {
-        UserData user = new UserData("test", "pass", "email");
-        userDAO.createUser(user);
+    public void testGetAuthPos() throws DataAccessException {
+        AuthData auth = new AuthData("test", "token");
+        authDAO.createAuth(auth);
 
-        Assertions.assertNotNull(userDAO.getUser("test"));
+        Assertions.assertNotNull(authDAO.getAuth("token"));
     }
 
     @Test
-    public void testGetUserNeg() throws DataAccessException {
-        UserData user = new UserData("test", "pass", "email");
-        userDAO.createUser(user);
-        Assertions.assertNull(userDAO.getUser("yomama"));
+    public void testGetAuthNeg() throws DataAccessException {
+        AuthData auth = new AuthData("test", "token");
+        authDAO.createAuth(auth);
+        Assertions.assertNull(authDAO.getAuth("yomama"));
     }
 }

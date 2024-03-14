@@ -30,7 +30,7 @@ public class GameService {
         return gameDAO.getGame(gameID);
     }
 
-    public void updateGame(JoinData joinData, String token) throws DataAccessException, DuplicateException {
+    public void joinGame(JoinData joinData, String token) throws DataAccessException, DuplicateException {
         GameData game = gameDAO.getGame(joinData.gameID());
 
         if (joinData.playerColor() == JoinData.Color.WHITE && game.getWhiteUsername() == null) {

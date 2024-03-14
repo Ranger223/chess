@@ -142,7 +142,7 @@ public class TestServerHandler {
                 res.status(400);
                 return "{ \"message\": \"Error: bad request\" }";
             }
-            gameService.updateGame(joinData, token);
+            gameService.joinGame(joinData, token);
             res.status(200);
             return "{}";
         } catch (Exception e) {
