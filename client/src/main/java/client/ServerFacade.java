@@ -1,3 +1,5 @@
+package client;
+
 import exception.ResponseException;
 import com.google.gson.Gson;
 import model.*;
@@ -22,7 +24,7 @@ public class ServerFacade {
         return this.makeRequest("POST", path, user, AuthData.class, null);
     }
 
-    public void logout( String authToken) throws ResponseException {
+    public void logout(String authToken) throws ResponseException {
         var path = "/session";
         this.makeRequest("DELETE", path, null, null, authToken);
     }
@@ -67,11 +69,11 @@ public class ServerFacade {
     }
 
     private static void writeBody(Object request, HttpURLConnection http, String authToken) throws IOException {
+        if(authToken != null) {
+            http.addRequestProperty("authorization", authToken);
+        }
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
-            if(authToken != null) {
-                http.addRequestProperty("Authorization", authToken);
-            }
             String reqData = new Gson().toJson(request);
             try (OutputStream reqBody = http.getOutputStream()) {
                 reqBody.write(reqData.getBytes());
