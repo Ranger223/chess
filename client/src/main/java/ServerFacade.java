@@ -12,6 +12,21 @@ public class ServerFacade {
         serverUrl = url;
     }
 
+    public AuthData registerUser(UserData user) throws ResponseException {
+        var path = "/user";
+        return this.makeRequest("POST", path, user, AuthData.class, null);
+    }
+
+    public AuthData login(UserData user) throws ResponseException {
+        var path = "/session";
+        return this.makeRequest("POST", path, user, AuthData.class, null);
+    }
+
+    public void logout( String authToken) throws ResponseException {
+        var path = "/session";
+        this.makeRequest("DELETE", path, null, null, authToken);
+    }
+
     public GameData addGame(GameData game, String authToken) throws ResponseException {
         var path = "/game";
         return this.makeRequest("POST", path, game, GameData.class, authToken);
@@ -28,6 +43,11 @@ public class ServerFacade {
     public GameData joinGame(GameData game, String authToken) throws ResponseException {
         var path = "/game";
         return this.makeRequest("PUT", path, game, GameData.class, authToken);
+    }
+
+    public void clearDB() throws ResponseException {
+        var path = "/db";
+        this.makeRequest("DELETE", path, null, null, null);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
@@ -50,7 +70,7 @@ public class ServerFacade {
         if (request != null) {
             http.addRequestProperty("Content-Type", "application/json");
             if(authToken != null) {
-                http.addRequestProperty("authorization", authToken);
+                http.addRequestProperty("Authorization", authToken);
             }
             String reqData = new Gson().toJson(request);
             try (OutputStream reqBody = http.getOutputStream()) {
