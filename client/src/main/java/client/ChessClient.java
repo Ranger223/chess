@@ -2,9 +2,11 @@ package client;
 
 import exception.ResponseException;
 import model.GameData;
+import model.JoinData;
 import model.UserData;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class ChessClient {
     private final ServerFacade server;
@@ -30,8 +32,7 @@ public class ChessClient {
                 case "logout" -> logout();
                 case "create" -> createGame(params);
                 case "list" -> listGames();
-//                case "join game" -> joinGame(params);
-//                case "join observer" -> joinObserver(params);
+                case "join" -> joinGame(params);
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -98,6 +99,35 @@ public class ChessClient {
         throw new ResponseException(400, "Expected: <NAME>");
     }
 
+    public String joinGame(String... params) throws ResponseException {
+        if (params.length == 1 || params.length == 2) {
+            JoinData data;
+            String color;
+            if(params.length == 1) {
+                data = new JoinData(null, Integer.parseInt(params[0]));
+                color = "observer";
+            } else {
+                if(Objects.equals(params[1], "black")) {
+                    data = new JoinData(JoinData.Color.BLACK, Integer.parseInt(params[0]));
+                    color = "black";
+                } else if (Objects.equals(params[1], "white")) {
+                    data = new JoinData(JoinData.Color.WHITE, Integer.parseInt(params[0]));
+                    color = "white";
+                } else {
+                    throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK|<empty>]");
+                }
+            }
+
+            try {
+                server.joinGame(data, authToken);
+                return String.format("You have joined game %s as %s.\n", params[0], color);
+            } catch(Exception e) {
+                return "Error joining game\n";
+            }
+        }
+        throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK|<empty>]");
+    }
+
     public String help() {
         if(authToken == null) {
             return """
@@ -111,7 +141,6 @@ public class ChessClient {
                 create <NAME> - a game
                 list - games
                 join <ID> [WHITE|BLACK|<empty>] - a game
-                observe <ID> - a game
                 logout - when you are done
                 quit - playing chess
                 help - with possible commands
