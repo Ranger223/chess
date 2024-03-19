@@ -1,6 +1,7 @@
 package client;
 
 import exception.ResponseException;
+import model.GameData;
 import model.UserData;
 
 import java.util.Arrays;
@@ -23,12 +24,12 @@ public class ChessClient {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "help" -> help();
-                case "quit" -> "quit";
+                case "quit" -> "Goodbye!";
                 case "register" -> register(params);
                 case "login" -> login(params);
                 case "logout" -> logout();
-//                case "create game" -> createGame(params);
-//                case "list games" -> listGames();
+                case "create" -> createGame(params);
+                case "list" -> listGames();
 //                case "join game" -> joinGame(params);
 //                case "join observer" -> joinObserver(params);
                 default -> help();
@@ -68,6 +69,33 @@ public class ChessClient {
         server.logout(authToken);
         authToken = null;
         return "Successfully logged " + user.getUsername() + " out.\n";
+    }
+
+    public String listGames() throws ResponseException {
+
+        try {
+            StringBuilder response = new StringBuilder();
+            GameData[] gamesArray = server.listGames(authToken);
+            for(GameData game : gamesArray) {
+                response.append(game.getGameID()).append(": ").append(game.getGameName()).append("\n");
+            }
+            return response.toString();
+        } catch(Exception e) {
+            return "Error listing games\n";
+        }
+    }
+
+    public String createGame(String... params) throws ResponseException {
+        if (params.length == 1) {
+            GameData game = new GameData(params[0], null, null);
+            try {
+                GameData temp = server.addGame(game, authToken);
+                return String.format("Game %s created! GameID: %d.\n", game.getGameName(), temp.getGameID());
+            } catch(Exception e) {
+                return "Error creating game\n";
+            }
+        }
+        throw new ResponseException(400, "Expected: <NAME>");
     }
 
     public String help() {
