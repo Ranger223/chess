@@ -47,6 +47,7 @@ public class ServerFacade {
         this.makeRequest("PUT", path, data, null, authToken);
     }
 
+    //The clear method is NOT used in the client, only for testing purposes
     public void clearDB() throws ResponseException {
         var path = "/db";
         this.makeRequest("DELETE", path, null, null, null);
