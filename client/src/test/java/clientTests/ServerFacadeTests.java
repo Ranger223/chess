@@ -27,6 +27,7 @@ public class ServerFacadeTests {
 
     @BeforeEach
     public void clearDB() throws ResponseException {
+        //my super cool method clears the db
         facade.clearDB();
     }
 
