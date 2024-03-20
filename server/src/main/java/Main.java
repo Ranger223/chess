@@ -15,7 +15,7 @@ public class Main {
             Server server = new Server();
             server.run(port);
             System.out.printf("Server started on port " + port);
-            return;
+
         } catch (Throwable ex) {
             System.out.printf("Unable to start server: %s%n", ex.getMessage());
         }
