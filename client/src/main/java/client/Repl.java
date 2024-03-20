@@ -15,7 +15,7 @@ public class Repl {
         System.out.println("♕ Welcome to the 240 Chess Client. Type Help to get started. ♕");
         Scanner scanner = new Scanner(System.in);
         var result = "";
-        while (!result.equals("quit")) {
+        while (!result.equals("Goodbye!")) {
             printPrompt();
             String line = scanner.nextLine();
 

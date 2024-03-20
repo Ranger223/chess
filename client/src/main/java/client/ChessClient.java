@@ -4,6 +4,7 @@ import exception.ResponseException;
 import model.GameData;
 import model.JoinData;
 import model.UserData;
+import ui.*;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -24,17 +25,26 @@ public class ChessClient {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-            return switch (cmd) {
-                case "help" -> help();
-                case "quit" -> "Goodbye!";
-                case "register" -> register(params);
-                case "login" -> login(params);
-                case "logout" -> logout();
-                case "create" -> createGame(params);
-                case "list" -> listGames();
-                case "join" -> joinGame(params);
-                default -> help();
-            };
+            if(loggedIn()) {
+                return switch (cmd) {
+                    case "help" -> help();
+                    case "quit" -> "Goodbye!";
+                    case "logout" -> logout();
+                    case "create" -> createGame(params);
+                    case "list" -> listGames();
+                    case "join" -> joinGame(params);
+                    default -> help();
+                };
+            } else {
+                return switch (cmd) {
+                    case "help" -> help();
+                    case "quit" -> "Goodbye!";
+                    case "register" -> register(params);
+                    case "login" -> login(params);
+                    default -> help();
+                };
+            }
+
         } catch (ResponseException ex) {
             return ex.getMessage();
         }
@@ -78,7 +88,7 @@ public class ChessClient {
             StringBuilder response = new StringBuilder();
             GameData[] gamesArray = server.listGames(authToken);
             for(GameData game : gamesArray) {
-                response.append(game.getGameID()).append(": ").append(game.getGameName()).append("\n");
+                response.append(game.getGameID()).append(": ").append(game.getGameName()).append("\nPlayers: WHITE[ ").append(game.getWhiteUsername()).append(" ] BLACK[ ").append(game.getBlackUsername()).append(" ]\n\n");
             }
             return response.toString();
         } catch(Exception e) {
@@ -120,7 +130,9 @@ public class ChessClient {
 
             try {
                 server.joinGame(data, authToken);
+                ChessBoardUI.run();
                 return String.format("You have joined game %s as %s.\n", params[0], color);
+
             } catch(Exception e) {
                 return "Error joining game\n";
             }
